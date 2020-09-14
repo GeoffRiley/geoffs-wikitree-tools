@@ -27,6 +27,11 @@ $script = $_SERVER['PHP_SELF'];
                       /* We're already logged in and have a valid session. */
                       $('#need_login').hide();
                       $('#logged_in').show();
+                      document.getElementById('request-id').addEventListener("keypress", function(e) {
+                          if (e.key === 'Enter') {
+                              walk(document.getElementById('request-id').value)
+                          }
+                      })
                   } else {
                       /* We're not yet logged in, but maybe we've been returned-to with an auth-code */
                       var x = window.location.href.split('?');
@@ -169,7 +174,7 @@ $script = $_SERVER['PHP_SELF'];
           ret += '[[' + person.Name + '|';
           ret += person_string_format(person, fmt);
           ret += "]]</span>";
-          ret += "<i class='fal fa-clipboard' onclick='copy_to_clipboard(\"P" + person.Id + "-" + idx.toString() + "\");'></i>";
+          ret += " <i class='fal fa-clipboard' onclick='copy_to_clipboard(\"P" + person.Id + "-" + idx.toString() + "\");'></i>";
 
           return ret;
       }
@@ -189,8 +194,15 @@ $script = $_SERVER['PHP_SELF'];
           ret += "<div style='float: left;'>";
           ret += "<span>";
           if (!isMale) {
+              if (person.MiddleName) {
+                  ret += format_copy_line(person, idx++, 'f m (b) l') + '<br/>';
+                  ret += format_copy_line(person, idx++, 'f m b') + '<br/>';
+              }
               ret += format_copy_line(person, idx++, 'f (b) l') + '<br/>';
               ret += format_copy_line(person, idx++, 'f b') + '<br/>';
+          }
+          if (person.MiddleName) {
+              ret += format_copy_line(person, idx++, 'f m l') + '<br/>'
           }
           ret += format_copy_line(person, idx++, 'f l') + '<br/>';
           ret += format_copy_line(person, idx++, 'f') + '<br/>';
@@ -269,6 +281,7 @@ $script = $_SERVER['PHP_SELF'];
           wikitree.session.logout();
           document.location.href = 'http://apps.wikitree.com/<?php echo $script;?>';
       }
+
   </script>
   <style type="text/css">
     #output {
@@ -376,7 +389,7 @@ $script = $_SERVER['PHP_SELF'];
       <li>Or you can return to <a href="http://apps.wikitree.com/">Apps</a>.
       </li>
     </ul>
-    <form name="request" id="request-form" onsubmit="walk_req();">
+    <form name="request" id="request-form" action="#">
       <label for="request-id">Enter WikiTree name id: </label>
       <input type="text" name="request-id" id="request-id" value="Tudor-4"/>
       <input type="button" name="select" value="Select" onclick="walk_req();"/>
