@@ -6,8 +6,7 @@ $script = $_SERVER['PHP_SELF'];
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="robots" content="noindex, nofollow"/>
-  <title>WikiTree - Family Tree and Free Genealogy - wikitree-javascript-sdk -
-    Example </title>
+  <title>WikiTree - Family Tree and Free Genealogy</title>
   <link rel="stylesheet" href="https://www.wikitree.com/css/main-new.css?2"
         type="text/css"/>
   <script defer src="fontawesome/js/all.js"></script>
@@ -22,7 +21,7 @@ $script = $_SERVER['PHP_SELF'];
       $(document).ready(function () {
           wikitree.init({});
           wikitree.session.checkLogin({})
-              .then(function (data) {
+              .then(function (/*data*/) {
                   if (wikitree.session.loggedIn) {
                       /* We're already logged in and have a valid session. */
                       $('#need_login').hide();
@@ -34,12 +33,12 @@ $script = $_SERVER['PHP_SELF'];
                       })
                   } else {
                       /* We're not yet logged in, but maybe we've been returned-to with an auth-code */
-                      var x = window.location.href.split('?');
-                      var queryParams = new URLSearchParams(x[1]);
+                      let x = window.location.href.split('?');
+                      let queryParams = new URLSearchParams(x[1]);
                       if (queryParams.has('authcode')) {
-                          var authcode = queryParams.get('authcode');
+                          let authcode = queryParams.get('authcode');
                           wikitree.session.clientLogin({'authcode': authcode})
-                              .then(function (data) {
+                              .then(function (/*data*/) {
                                   if (wikitree.session.loggedIn) {
                                       /* If the auth-code was good, redirect back to ourselves without the authcode in the URL (don't want it bookmarked, etc). */
                                       window.location = '<?php echo $script ?>';
@@ -58,10 +57,10 @@ $script = $_SERVER['PHP_SELF'];
       });
 
       function copy_to_clipboard(tag) {
-          var el = document.getElementById(tag);
-          var range = document.createRange();
+          let el = document.getElementById(tag);
+          let range = document.createRange();
           range.selectNodeContents(el);
-          var sel = window.getSelection();
+          let sel = window.getSelection();
           sel.removeAllRanges();
           sel.addRange(range);
           document.execCommand("copy");
@@ -92,13 +91,13 @@ $script = $_SERVER['PHP_SELF'];
       //           = 1 for long month names
       //           < 0 for just year
       function format_date(date, longmonth = 0) {
-          var ret = '';
+          let ret = '';
 
           if (date && date !== '0000-00-00') {
-              var parts = date.split('-');
+              let parts = date.split('-');
               ret = parts[0];
               if (longmonth >= 0) {
-                  var mon = parts[1].valueOf();
+                  let mon = parts[1].valueOf();
                   if (mon > 0) {
                       ret = monthName[(mon - 1) * 2 + longmonth] + ' ' + ret;
                       if (parts[2].valueOf() > 0)
@@ -111,9 +110,9 @@ $script = $_SERVER['PHP_SELF'];
       }
 
       function person_string_format(person, fmt) {
-          var ret = '';
+          let ret = '';
 
-          for (var c of fmt) {
+          for (let c of fmt) {
               switch (c) {
                   case 'f':
                       ret += person.FirstName;
@@ -168,7 +167,7 @@ $script = $_SERVER['PHP_SELF'];
       }
 
       function format_copy_line(person, idx, fmt = 'f l') {
-          var ret = '';
+          let ret = '';
 
           ret += "<span class='SMALL' id='P" + person.Id + "-" + idx.toString() + "'>";
           ret += '[[' + person.Name + '|';
@@ -180,9 +179,9 @@ $script = $_SERVER['PHP_SELF'];
       }
 
       function wlinks(person) {
-          var ret = '';
-          var idx = 1;
-          var isMale = person.Gender === 'Male';
+          let ret = '';
+          let idx = 1;
+          const isMale = person.Gender === 'Male';
 
           ret += "<div class='" + (isMale ? 'BLUE' : 'PINK') + "' style='border:1px solid;'>";
           ret += "<div style='float: left;'>";
@@ -215,13 +214,10 @@ $script = $_SERVER['PHP_SELF'];
       }
 
       function walk_group(group, target) {
-          var html = '';
+          let html = '';
           if (group) {
-              for (id in group) {
-                  var c = group[id];
-                  /*if (html !== '') {
-                      html += ' / ';
-                  }*/
+              for (let id in group) {
+                  let c = group[id];
                   html += wlinks(c);
               }
           }
@@ -236,8 +232,8 @@ $script = $_SERVER['PHP_SELF'];
               user_id = Cookies.get('wikitree_wtb_UserID');
           }
           // Go get the person data.
-          var p = new Person({user_id: user_id});
-          p.load({fields: 'Id,Name,Gender,FirstName,MiddleName,LastNameAtBirth,LastNameCurrent,BirthDate,DeathDate,Father,Mother,Parents,Children,Siblings,Spouses'}).then(function (data) {
+          let p = new Person({user_id: user_id});
+          p.load({fields: 'Id,Name,Gender,FirstName,MiddleName,LastNameAtBirth,LastNameCurrent,BirthDate,DeathDate,Father,Mother,Parents,Children,Siblings,Spouses'}).then(function (/*data*/) {
               // Raw JSON results dumped to display div
               $('#raw').hide();
               // $('#raw').html("<h2>Raw Results</h2>\n<pre>" + JSON.stringify(data, null, 4) + "</pre>");
@@ -247,7 +243,7 @@ $script = $_SERVER['PHP_SELF'];
 
               //Father: span id="walk_father"
               if (p.Parents[p.Father]) {
-                  var f = p.Parents[p.Father];
+                  let f = p.Parents[p.Father];
                   $('#walk_father').html(wlinks(f));
               } else {
                   $('#walk_father').html('');
@@ -255,7 +251,7 @@ $script = $_SERVER['PHP_SELF'];
 
               //Mother: span id="walk_mother"
               if (p.Parents[p.Mother]) {
-                  var m = p.Parents[p.Mother];
+                  let m = p.Parents[p.Mother];
                   $('#walk_mother').html(wlinks(m));
               } else {
                   $('#walk_mother').html('');
